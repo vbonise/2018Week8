@@ -39,7 +39,7 @@ summary(sample_data(HMPv35))
 
 ```
 
-Let's subset
+Let's subset to get only samples from Stool or Palatine_Tonsils.
 
 ```{r}
 
@@ -73,6 +73,10 @@ Let's look at diversity
 
 ```{r}
 
+#This changes the background to my favorite
+theme_set(theme_bw())
+
+#The following commands plot the different diversity measures for the two different body sites.
 alpha_meas = c("Observed", "Chao1", "ACE", "Shannon", "Simpson", "InvSimpson")
 (p <- plot_richness(HMPv35sub, "HMPbodysubsite", measures=alpha_meas))
 
@@ -96,6 +100,31 @@ Produce the geometric box plot of diversity measures for your object, HMPv35sub2
 ```
 
 
+Let's see what phyla are represented here. This will rely on Base R graphics.
+
+```{r}
+
+#Calclate number of taxa in object
+ntaxa(HMPv35sub)
+
+par(mar = c(10, 4, 4, 2) + 0.1) # make more room on bottom margin
+N <- 20
+barplot(sort(taxa_sums(HMPv35sub), TRUE)[1:N]/nsamples(HMPv35sub), las=2)
+
+```
+
+
+Since there are over 45000 taxa represented in this object, we are only going for the top 20.
+
+####Problem 3
+
+You see what taxa are most prevalent in your subset, HMPv35sub2
+
+```{r}
+
+#Place your code here
+
+```
 
 
 Let's filter OTU's a bit, throwing out rare taxa. 
@@ -129,19 +158,42 @@ to 131 taxa in 631 samples after the two filtering steps
 
 to 62 taxa in the phylum Bacteroidetes in 631 samples.
 
-####Problem 3
+####Problem 4
 
 Using your HMPv35sub2 object, throw the rare taxa out of that object, then reduce to only taxa in the phylum Bacteroidetes. Call this new object HMPv35sub2frbac 
 
 ```{r}
 
-#Insert your code to throw out the rare taxa from the females only object
+#Insert your code to throw out the rare taxa from the HMPv35sub2 object
 
 #Call the object HMPv35sub2frbac
 
 ```
 
-Now let's summarize this slice of data with some graphics
+Let's look at the top taxa again in this filtered object.
+
+```{r}
+
+#Calclate number of taxa in object
+ntaxa(HMPv35subfrbac)
+
+par(mar = c(10, 4, 4, 2) + 0.1) # make more room on bottom margin
+N <- 20
+barplot(sort(taxa_sums(HMPv35subfrbac), TRUE)[1:N]/nsamples(HMPv35subfrbac), las=2)
+
+```
+
+####Problem 5
+Using your HMPv35sub2frbac object, what is the distribution of the top 20 OTU's?
+
+```{r}
+
+#Place your code here.
+
+```
+
+
+Now let's summarize this slice of data with some more graphics
 
 ```{r}
 
@@ -150,7 +202,7 @@ plot_bar(HMPv35subfrbac, "HMPbodysubsite", "Abundance", title=title)
 
 ```
 
-####Problem 4
+####Problem 6
 
 Plot sample abundance by body site for your object HMPv35sub2frbac
 
@@ -169,7 +221,7 @@ plot_bar(HMPv35subfrbac, "HMPbodysubsite", "Abundance", "Phylum", title=title)
 
 ```
 
-####Problem 5
+####Problem 7
 
 You try it with your HMPv35sub2frbac object
 
@@ -180,4 +232,25 @@ You try it with your HMPv35sub2frbac object
 ```
 
 
+We can use the techniques of network science to illustrate how similar or distant samples are.
 
+Using our filtered object with all phyla, we use the `plot_net` function to illustrate the "proximity" (or similarity) of samples, while denoting site and the sex of the participant.
+
+```{r}
+plot_net(HMPv35subfr, maxdist = 0.3, color = "HMPbodysubsite", shape="sex")
+```
+
+Let's redo switching which variable is colored and which variable is differentiated by shape.
+
+```{r}
+plot_net(HMPv35subfr, maxdist = 0.3, shape = "HMPbodysubsite", color="sex")
+```
+####Problem 8
+
+Which method of display do you like best and why?
+
+```{r}
+
+#Place your answer here as another comment.
+
+```
