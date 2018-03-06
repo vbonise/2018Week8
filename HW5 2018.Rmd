@@ -1,0 +1,183 @@
+---
+title: "HW52018"
+author: "Vicki Hertzberg"
+date: "3/5/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Let's load everything in:
+
+```{r}
+
+# Load all packages
+library(phyloseq)
+packageVersion("phyloseq")
+library(ggplot2) 
+packageVersion("ggplot2")
+library(RColorBrewer)
+packageVersion("RColorBrewer")
+
+#Load HMP data
+# You will need to change your path
+
+load("~/Downloads/HMPv35.RData")
+
+HMPv35
+
+
+```
+
+What is in here?
+
+```{r}
+
+summary(sample_data(HMPv35))
+
+```
+
+Let's subset
+
+```{r}
+
+#Subset 
+
+sub <- get_variable(HMPv35, "HMPbodysubsite") %in% c("Stool", "Palatine_Tonsils")
+
+sample_data(HMPv35)$sub <- factor(sub)
+
+HMPv35sub <- prune_samples(sample_data(HMPv35)$sub == TRUE, HMPv35)
+
+summary(sample_data(HMPv35sub))
+
+HMPv35sub
+
+```
+
+####Problem 1
+
+Subset the HMPv35 object to obtain only the samples from Tongue_dorsum and Bucosal_mucosa. Call this new object HMPv35sub2
+
+```{r}
+
+# Fill in your code to subset
+
+# Call the new object HMPv35sub2
+
+```
+
+Let's look at diversity
+
+```{r}
+
+alpha_meas = c("Observed", "Chao1", "ACE", "Shannon", "Simpson", "InvSimpson")
+(p <- plot_richness(HMPv35sub, "HMPbodysubsite", measures=alpha_meas))
+
+```
+
+Let's add a box plot to these displays of diversity
+
+```{r}
+
+p + geom_boxplot(data=p$data, aes(x=HMPbodysubsite, y=value, color=NULL), alpha=0.1)
+
+```
+
+####Problem 2
+
+Produce the geometric box plot of diversity measures for your object, HMPv35sub2
+```{r}
+
+#Place your code for the box plot for diversity here
+
+```
+
+
+
+
+Let's filter OTU's a bit, throwing out rare taxa. 
+
+```{r}
+
+#The next step filters out taxa with low occurrence throughout all samples
+
+HMPv35subsub = filter_taxa(HMPv35sub, function(x) sum(x > 3) > (0.2*length(x)), TRUE)
+
+# The next step filters out all taxa that occur in less than .01% of samples
+
+HMPv35subr  <- transform_sample_counts(HMPv35subsub, function(x) x / sum(x) )
+HMPv35subfr <- filter_taxa(HMPv35subr, function(x) mean(x) > 1e-5, TRUE)
+
+
+HMPv35subfr
+
+#Finally subset to only bacteria in the phylum Bacteroidetes
+
+HMPv35subfrbac = subset_taxa(HMPv35subfr, Phylum=="Bacteroidetes")
+HMPv35subfrbac
+
+```
+
+So we have gone from 45336 taxa in 4743 in the original HMPv35 dataset
+
+to 45336 taxa in 631 samples in the Stool and Palatine Tonsil samples subset
+
+to 131 taxa in 631 samples after the two filtering steps 
+
+to 62 taxa in the phylum Bacteroidetes in 631 samples.
+
+####Problem 3
+
+Using your HMPv35sub2 object, throw the rare taxa out of that object, then reduce to only taxa in the phylum Bacteroidetes. Call this new object HMPv35sub2frbac 
+
+```{r}
+
+#Insert your code to throw out the rare taxa from the females only object
+
+#Call the object HMPv35sub2frbac
+
+```
+
+Now let's summarize this slice of data with some graphics
+
+```{r}
+
+title = "plot_bar; by site; Bacteroidetes only"
+plot_bar(HMPv35subfrbac, "HMPbodysubsite", "Abundance", title=title)
+
+```
+
+####Problem 4
+
+Plot sample abundance by body site for your object HMPv35sub2frbac
+
+```{r}
+
+#Place your code for the plat here
+
+```
+
+
+Let's try to see if there is something more to differentiate here beyond the black blobs.
+
+```{r}
+
+plot_bar(HMPv35subfrbac, "HMPbodysubsite", "Abundance", "Phylum", title=title)
+
+```
+
+####Problem 5
+
+You try it with your HMPv35sub2frbac object
+
+```{r}
+
+#Place your code for your plot with family here
+
+```
+
+
+
