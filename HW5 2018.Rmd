@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Let's load everything in:
+Download the dataset from the Canvas folder. Then let's load everything in:
 
 ```{r}
 
@@ -22,6 +22,7 @@ library(RColorBrewer)
 packageVersion("RColorBrewer")
 
 #Load HMP data
+#You will need to download the data from Canvas
 # You will need to change your path
 
 load("~/Downloads/HMPv35.RData")
@@ -59,7 +60,7 @@ HMPv35sub
 
 ####Problem 1
 
-Subset the HMPv35 object to obtain only the samples from Tongue_dorsum and Bucosal_mucosa. Call this new object HMPv35sub2
+Subset the HMPv35 object to obtain only the samples from Tongue_dorsum. Call this new object HMPv35sub2
 
 ```{r}
 
